@@ -3,7 +3,7 @@
 namespace app\models;
 
 
-class User extends Model
+class User extends DBModel
 {
     public $id;
     public $login;
@@ -17,7 +17,7 @@ class User extends Model
     }
 
 
-    protected function getTableName()
+    protected static function getTableName()
     {
         return 'users';
     }

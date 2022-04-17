@@ -34,7 +34,7 @@ class Db
 
     public function lastInsertId()
     {
-        //TODO вернуть id
+        return $this->getConnection()->lastInsertId();
     }
 
     private function prepareDsnString()
@@ -48,7 +48,8 @@ class Db
     }
 
     //sql = "SELECT * FROM `products` WHERE id = :id" $params = ['id'=>1]
-    private function query($sql, $params) {
+    private function query($sql, $params)
+    {
         $STH = $this->getConnection()->prepare($sql);
         $STH->execute($params);
         return $STH;
@@ -57,9 +58,14 @@ class Db
     public function queryOneObject($sql, $params, $class)
     {
         $STH = $this->query($sql, $params);
-        //TODO сделать чтобы конструктор вызывался до извлечения из БД
-        $STH->setFetchMode(\PDO::FETCH_CLASS, $class);
+        $STH->setFetchMode(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $class);
         return $STH->fetch();
+    }
+
+    public function queryLimit($sql, $limit) {
+        $STH = $this->getConnection()->prepare($sql);
+        $STH->bindValue(1, $limit, \PDO::PARAM_INT);
+        //TODO вернуть результат
     }
 
     public function queryOne($sql, $params = [])
