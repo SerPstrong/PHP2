@@ -1,0 +1,19 @@
+<h2>Базовое использование, вывод переменных</h2>
+{# Переменные #}
+{% set greeting = 'Привет ' %}
+
+{# Вывод переменных #}
+{{ greeting ~ name | upper }} <br>
+
+{# Доступ к массиву #}
+arr[id] = {{ arr.id }} <br>
+
+Код code | e: {{ code | e }} <br>
+Код code | raw: {{ code | raw }} <br>
+
+{# Отладка #}
+{{ dump(1..5) }} <br>
+
+{# Форматированный вывод даты #}
+{{ "now"|date('d/m/Y H:i', timezone="Europe/Moscow") }} <br>
+
