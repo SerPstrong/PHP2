@@ -65,7 +65,8 @@ class Db
     public function queryLimit($sql, $limit) {
         $STH = $this->getConnection()->prepare($sql);
         $STH->bindValue(1, $limit, \PDO::PARAM_INT);
-        //TODO вернуть результат
+        $STH->execute();
+        return $STH->fetchAll();
     }
 
     public function queryOne($sql, $params = [])
@@ -82,6 +83,5 @@ class Db
     {
         return $this->query($sql, $params)->rowCount();
     }
-
 
 }

@@ -4,13 +4,17 @@ namespace app\models;
 
 class Basket extends DBModel
 {
-    public $id;
-    public $session_id;
-    public $product_id;
+    protected $id;
+    protected $session_id;
+    protected $product_id;
 
+    protected $props = [
+        'session_id' => false,
+        'product_id' => false
+    ];
 
     public static function getBasket() {
-        //запрос на корзину
+        return [];
     }
 
     public static function getTableName()

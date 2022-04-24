@@ -8,15 +8,18 @@ abstract class DBModel extends Model
 {
     protected abstract static function getTableName();
 
+    //SELECT from users where login = admin
+    public static function getWhere($name, $value) {
+        //TODO собрать запрос вида WHERE 'login' = 'admin'
+    }
 
     public function insert()
     {
         $params = [];
         $columns = [];
 
-        foreach ($this as $key => $value) {
-            if ($key == 'id') continue;
-            $params[":" . $key] = $value;
+        foreach ($this->props as $key => $value) {
+            $params[":" . $key] = $this->$key;
             $columns[] = $key;
         }
 
@@ -36,13 +39,32 @@ abstract class DBModel extends Model
 
     public function update()
     {
-        //TODO сделать update в идеале оптимальный, формировать set только по изменившимся полям
+        $params = [];
+        $colums = [];
+
+        $tableName = static::getTableName();
+
+        foreach ($this->props as $key => $value) {
+            if (!$value) continue;
+            $params["{$key}"] = $this->$key;
+            $colums[] .= "`{$key}` = :{$key}";
+            $this->props[$key] = false;
+        }
+        $colums = implode(", ", $colums);
+        $params['id'] = $this->id;
+
+        $sql = "UPDATE `{$tableName}` SET {$colums} WHERE `id` = :id";
+        Db::getInstance()->execute($sql, $params);
+        return $this;
     }
 
     public function save()
     {
-        //TODO реализовать умный save
-        //if (???) $this->insert(); else $this->update();
+        if (is_null($this->id)) {
+            $this->insert();
+        } else {
+            $this->update();
+        }
     }
 
     public function delete()
@@ -51,7 +73,6 @@ abstract class DBModel extends Model
         $sql = "DELETE FROM $tableName WHERE id = :id";
         return Db::getInstance()->execute($sql, ['id' => $this->id]);
     }
-
 
 
     public static function getOne($id)
@@ -69,7 +90,8 @@ abstract class DBModel extends Model
         return Db::getInstance()->queryAll($sql);
     }
 
-    public static function getLimit($limit) {
+    public static function getLimit($limit)
+    {
         $tableName = static::getTableName();
         $sql = "SELECT * FROM {$tableName} LIMIT 0, ?";
         return Db::getInstance()->queryLimit($sql, $limit);

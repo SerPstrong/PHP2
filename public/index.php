@@ -1,7 +1,10 @@
 <?php
 
+session_start();
+
 use app\engine\Autoload;
 use app\models\{Product, User};
+use app\engine\Render;
 
 
 //TODO добавьте абсолютные пути
@@ -20,7 +23,7 @@ $actionName = $_GET['a'];
 $controllerClass = CONTROLLER_NAMESPACE . ucfirst($controllerName) . "Controller";
 
 if (class_exists($controllerClass)) {
-    $controller = new $controllerClass();
+    $controller = new $controllerClass(new Render());
     $controller->runAction($actionName);
 } else {
     die("Нет такого контроллера");
