@@ -8,7 +8,7 @@ class Db
 {
     private $config = [
         'driver' => 'mysql',
-        'host' => 'localhost:3306',
+        'host' => 'localhost:3307',
         'login' => 'root',
         'password' => '',
         'database' => 'shop',
